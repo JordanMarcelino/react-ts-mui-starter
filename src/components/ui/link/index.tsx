@@ -8,10 +8,7 @@ export const Link: React.FC<LinkProps> = ({
   ...props
 }) => {
   return (
-    <RouterLink
-      className={cn('text-slate-600 hover:text-slate-900', className)}
-      {...props}
-    >
+    <RouterLink className={cn(className)} {...props}>
       {children}
     </RouterLink>
   );

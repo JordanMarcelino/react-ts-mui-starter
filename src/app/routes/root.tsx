@@ -1,7 +1,7 @@
 import { serverDown } from '@/config/images';
 import { Button, Container, Typography } from '@mui/material';
 
-export const MainErrorFallback: React.FC = () => {
+export const AppRootErrorBoundary: React.FC = () => {
   return (
     <Container
       sx={{
