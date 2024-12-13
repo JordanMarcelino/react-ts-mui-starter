@@ -3,6 +3,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import * as React from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { HelmetProvider } from 'react-helmet-async';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 
 import { MainErrorFallback } from '@/components/errors/main';
 import { Spinner } from '@/components/ui/spinner';
@@ -11,13 +12,24 @@ import { CookiesProvider } from 'react-cookie';
 import store from '@/store';
 import { ThemeProvider } from '@mui/material';
 import { theme } from '@/theme';
+import { ToastProvider } from '@/providers/toast';
+import { LocalizationProvider } from '@mui/x-date-pickers';
 
 type AppProviderProps = {
   children: React.ReactNode;
 };
 
 export const AppProvider = ({ children }: AppProviderProps) => {
-  const [queryClient] = React.useState(() => new QueryClient());
+  const [queryClient] = React.useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            staleTime: 10 * 1000,
+          },
+        },
+      }),
+  );
 
   return (
     <React.Suspense
@@ -33,8 +45,12 @@ export const AppProvider = ({ children }: AppProviderProps) => {
             <HelmetProvider>
               <QueryClientProvider client={queryClient}>
                 <ThemeProvider theme={theme}>
-                  {import.meta.env.DEV && <ReactQueryDevtools />}
-                  {children}
+                  <ToastProvider>
+                    {import.meta.env.DEV && <ReactQueryDevtools />}
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                      {children}
+                    </LocalizationProvider>
+                  </ToastProvider>
                 </ThemeProvider>
               </QueryClientProvider>
             </HelmetProvider>
